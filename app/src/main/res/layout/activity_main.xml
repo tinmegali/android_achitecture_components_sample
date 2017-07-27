@@ -1,33 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tinmegali.myweather.MainActivity">
+    tools:context="com.tinmegali.myweather.MainActivity"
+    android:layout_margin="16dp"
+    >
 
-    <android.support.design.widget.AppBarLayout
+
+    <EditText
+        android:id="@+id/editCity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:ems="10"
+        android:hint="City"
+        android:inputType="textPersonName"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+    <Button
+        android:id="@+id/btnGetCity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Get City Weather"
+        android:layout_below="@+id/editCity"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
 
-    </android.support.design.widget.AppBarLayout>
+        />
 
-    <include layout="@layout/content_main" />
+    <RelativeLayout
+        android:id="@+id/containerWeather"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:layout_below="@+id/btnGetCity"
+        >
+        <!-- City Name-->
+        <TextView
+            android:id="@+id/txtCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CityName"
+            android:textSize="30dp"
+            android:textAlignment="center"
+            android:layout_marginBottom="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+            />
+
+        <!-- Icon -->
+        <ImageView
+            android:id="@+id/imgIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="?android:attr/alertDialogIcon"
+            android:layout_alignTop="@+id/txtMin"
+            android:layout_alignBottom="@+id/txtMax"
+            android:paddingRight="16dp"
+            android:layout_marginLeft="100dp"
+            android:layout_alignParentStart="true" />
+
+        <!--Min-->
+        <TextView
+            android:id="@+id/txtMin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtCity"
+            android:layout_toEndOf="@+id/imgIcon"
+            android:layout_alignParentEnd="true"
+            android:textSize="20dp"
+            android:text="Min" />
+
+        <!--Max-->
+        <TextView
+            android:id="@+id/txtMax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtMin"
+            android:layout_toEndOf="@+id/imgIcon"
+            android:layout_alignParentEnd="true"
+            android:textSize="20dp"
+            android:text="Min" />
+
+
+        <!--Main-->
+        <TextView
+            android:id="@+id/txtMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Main..."
+            android:textSize="28dp"
+            android:layout_marginTop="16dp"
+            android:textAlignment="center"
+            android:layout_below="@+id/txtMax"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
+
+        <!--Description-->
+        <TextView
+            android:id="@+id/txtDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/txtMain"
+            android:layout_marginTop="16dp"
+            android:text="Description"
+            android:textAlignment="center" />
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:layout_centerInParent="true"
+        android:layout_marginTop="35dp" />
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>
