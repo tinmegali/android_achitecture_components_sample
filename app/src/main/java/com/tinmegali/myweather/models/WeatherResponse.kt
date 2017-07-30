@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
+import retrofit2.Response
 import java.util.function.Consumer
 
 

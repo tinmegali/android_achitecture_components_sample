@@ -22,7 +22,6 @@ class LocationLiveData
 
     override fun onActive() {
         info("onActive")
-        getLocation()
     }
 
     @SuppressLint("MissingPermission")

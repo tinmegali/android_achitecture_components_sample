@@ -1,11 +1,11 @@
 package com.tinmegali.myweather.repository
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.MediatorLiveData
 import android.location.Location
 import com.tinmegali.myweather.data.LocationLiveData
 import com.tinmegali.myweather.data.PrefsDAO
-import com.tinmegali.myweather.models.Response
+import com.tinmegali.myweather.models.ApiResponse
 import com.tinmegali.myweather.models.WeatherMain
 import com.tinmegali.myweather.models.WeatherResponse
 import com.tinmegali.myweather.web.OpenWeatherService
@@ -21,7 +21,7 @@ class MainRepository
     ) : AnkoLogger
 {
 
-    fun getWeatherByCity( city: String ) : Response<WeatherResponse>
+    fun getWeatherByCity( city: String ) : LiveData<ApiResponse<WeatherResponse>>
     {
         info("updateWeatherByCity: $city")
         return openWeatherService.getWeatherByCity(city)
@@ -49,9 +49,9 @@ class MainRepository
         location.refreshLocation()
     }
 
-    fun getWeatherByLocation( location: Location ) : Response<WeatherResponse>
+    fun getWeatherByLocation( location: Location ) : LiveData<ApiResponse<WeatherResponse>>
     {
-        info("updateWeatherByLocation: \n$location")
+        info("getWeatherByLocation: \n$location")
         return openWeatherService.getWeatherByLocation( location )
     }
 

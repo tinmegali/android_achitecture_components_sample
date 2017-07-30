@@ -2,7 +2,7 @@ package com.tinmegali.myweather.models
 
 import com.tinmegali.myweather.web.ApiError
 
-class Response<T>
+class ApiResponse<T>
     constructor(
     val data: T? = null,
     val error: ApiError? = null) {

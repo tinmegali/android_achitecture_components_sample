@@ -4,6 +4,7 @@ import android.content.Context
 import com.tinmegali.myweather.R
 import com.tinmegali.myweather.data.PrefsDAO
 import com.tinmegali.myweather.web.ErrorUtils
+import com.tinmegali.myweather.web.LiveDataCallAdapterFactory
 import com.tinmegali.myweather.web.OpenWeatherApi
 import com.tinmegali.myweather.web.OpenWeatherService
 import dagger.Module
@@ -28,6 +29,7 @@ import javax.inject.Singleton
         return Retrofit.Builder()
                 .baseUrl("http://api.openweathermap.org/data/2.5/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(LiveDataCallAdapterFactory())
                 .build()
     }
 

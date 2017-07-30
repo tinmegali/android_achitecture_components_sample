@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.View
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.tinmegali.myweather.models.WeatherMain
 import dagger.android.AndroidInjection
@@ -38,21 +37,18 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
 
         btnGetCity.setOnClickListener {
             info("get city: ${editCity.text}")
-            doAsync {
-                if ( !editCity.text.toString().isEmpty() ) {
-                    uiThread { isLoading(true) }
-                    getWeatherByCity(editCity.text.toString())
-                } else {
-                    uiThread {
-                        toast("Please, write a city.")
-                    }
-                }
+            if (!editCity.text.toString().isEmpty()) {
+                isLoading(true)
+                getWeatherByCity(editCity.text.toString())
+            } else {
+                toast("Please, write a city.")
             }
+
         }
 
         btnGetLocation.setOnClickListener {
             info("get location")
-            if ( checkLocationPermissions() ) {
+            if (checkLocationPermissions()) {
                 isLoading(true)
                 getWeatherByLocation()
             }
