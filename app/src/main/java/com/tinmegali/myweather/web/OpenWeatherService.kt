@@ -10,6 +10,7 @@ import com.tinmegali.myweather.models.WeatherResponse
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.info
+import org.jetbrains.anko.uiThread
 import javax.inject.Inject
 
 
@@ -27,8 +28,12 @@ class OpenWeatherService
     fun getWeatherByCity(city: String): LiveData<ApiResponse<WeatherResponse>> {
         info("updateWeatherByCity: $city")
 
+        // Create a Mediator object
+        // make api calls
+        // return the object as LiveData
         return (object : Mediator<ApiResponse<WeatherResponse>>() {
             override fun callApi(): LiveData<ApiResponse<WeatherResponse>> {
+                info("callApi")
                 return api.cityWeatherLive( openWeatherId, city, prefsDAO.getUnits() )
             }
         }).get()
@@ -38,8 +43,12 @@ class OpenWeatherService
     fun getWeatherByLocation( location: Location ) : LiveData<ApiResponse<WeatherResponse>> {
         info("getWeatherByLocation")
 
+        // Create a Mediator object
+        // make api calls
+        // return the object as LiveData
         return (object : Mediator<ApiResponse<WeatherResponse>>() {
             override fun callApi(): LiveData<ApiResponse<WeatherResponse>> {
+                info("callApi")
                 return api.cityWeatherByLocationLive(
                         openWeatherId,
                         location.latitude.toString(),
@@ -50,6 +59,11 @@ class OpenWeatherService
         }).get()
     }
 
+    // Mediator Object
+    // Create a MediatorLiveData<T> to handle results
+    // monitors api calls
+    // make api calls on worker thread
+    // return a LiveData<T> containing the result
     abstract class Mediator<T> : AnkoLogger {
         private var result: MediatorLiveData<T> = MediatorLiveData()
 
@@ -61,8 +75,10 @@ class OpenWeatherService
                         apiResult,
                         {
                             r ->
-                            result.removeSource(apiResult)
                             result.postValue(r)
+                            uiThread {
+                                result.removeSource(apiResult)
+                            }
                         }
                 )
             }

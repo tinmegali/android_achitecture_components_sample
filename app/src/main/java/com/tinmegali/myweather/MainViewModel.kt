@@ -1,8 +1,6 @@
 package com.tinmegali.myweather
 
 import android.arch.lifecycle.*
-import android.arch.lifecycle.Observer
-import android.location.Location
 import com.tinmegali.myweather.data.LocationLiveData
 import com.tinmegali.myweather.models.ApiResponse
 import com.tinmegali.myweather.models.WeatherMain
@@ -22,10 +20,13 @@ constructor(
     : ViewModel(), AnkoLogger {
 
     // Location
-    private val location: LocationLiveData = repository.getLocation()
+    private val location: LocationLiveData = repository.locationLiveDa()
 
     // City Name
     private val cityName: MutableLiveData<String> = MutableLiveData()
+
+    // Weather by cache
+    private var weatherByCache: LiveData<WeatherMain> = MutableLiveData()
 
     // Can hold two variable with different logic,
     // weatherByCityName and weatherByLocation.
@@ -56,6 +57,7 @@ constructor(
 
     init {
         info("init")
+        getWeatherCached()
         addWeatherSources()
     }
 
@@ -66,12 +68,12 @@ constructor(
     }
 
     private fun addWeatherSources(){
-        info("assWeatherSources")
+        info("addWeatherSources")
         weather.addSource(
                 weatherByCityResponse,
                 {
                     w ->
-                    info("assWeatherSources: \nweather: ${w!!.data!!}")
+                    info("addWeatherSources: \nweather: ${w!!.data!!}")
                     updateWeather(w.data!!)
                 }
         )
@@ -79,7 +81,7 @@ constructor(
                 weatherByLocationResponse,
                 {
                     w ->
-                    info("assWeatherSources: weatherByLocationResponse: \n${w!!.data!!}")
+                    info("addWeatherSources: weatherByLocationResponse: \n${w!!.data!!}")
                     updateWeather(w.data!!)
                 }
         )
@@ -125,30 +127,18 @@ constructor(
         repository.refreshLocation()
     }
 
-    fun getWeatherCached() {
+    private fun getWeatherCached() {
         info("getWeatherCached")
-        doAsync {
-            val w = repository.getWeatherMainFromPrefs()
-            if (w != null) {
-                info("getWeatherCached: weather retrieved.")
-                if (isCachedWeatherValid(w)) {
-                    info("getWeatherCached: weather is valid.\n$w")
+        weatherByCache = repository.getWeatherMainFromPrefs()
+        weather.addSource(
+                weatherByCache,
+                {
+                    w ->
+                    info("getWeatherCached: \n$w")
                     weather.postValue(ApiResponse(data = w))
+                    weather.removeSource(weatherByCache)
                 }
-            } else {
-                warn("getWeatherCached: no weather cached.")
-                val e = ApiError(statusCode = 0, message = "No weather cached.")
-                weather.postValue(ApiResponse(error = e))
-            }
-        }
-    }
+        )
 
-    private fun isCachedWeatherValid(w: WeatherMain): Boolean {
-        info("isCachedWeatherValid: value saved on preferences")
-        // check if is still valid
-        val c: Calendar = Calendar.getInstance()
-        val now = TimeUnit.MILLISECONDS.toSeconds(c.timeInMillis)
-        val limit = (60 * 60) * 2 // 2 H
-        return now - w.dt!! <= limit
     }
 }

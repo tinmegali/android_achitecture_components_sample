@@ -64,36 +64,32 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
 
         if (viewModel != null) {
 
-            doAsync {
-                // observe weather
-                viewModel!!.getWeather().observe(
-                        this@MainActivity,
-                        Observer {
-                            r ->
-                            info("Weather received on MainActivity:\n $r")
-                            if (!r!!.hasError()) {
-                                // Doesn't have any errors
-                                info("weather: ${r.data}")
-                                if (r.data != null)
-                                    uiThread { setUI(r.data) }
-                            } else {
-                                // error
-                                error("error: ${r.error}")
-                                uiThread { isLoading(false) }
-                                if (r.error!!.statusCode != 0) {
-                                    if (r.error!!.message != null)
-                                        toast(r.error.message!!)
-                                    else
-                                        toast("An error occurred")
-                                }
+            // observe weather
+            viewModel!!.getWeather().observe(
+                    this@MainActivity,
+                    Observer {
+                        r ->
+                        info("Weather received on MainActivity:\n $r")
+                        if (!r!!.hasError()) {
+                            // Doesn't have any errors
+                            info("weather: ${r.data}")
+                            if (r.data != null)
+                                setUI(r.data)
+                        } else {
+                            // error
+                            error("error: ${r.error}")
+                            isLoading(false)
+                            if (r.error!!.statusCode != 0) {
+                                if (r.error!!.message != null)
+                                    toast(r.error.message!!)
+                                else
+                                    toast("An error occurred")
                             }
                         }
-                )
-            }
-        }
+                    }
+            )
 
-        // get cached model
-        viewModel!!.getWeatherCached()
+        }
     }
 
     private fun getWeatherByLocation() {

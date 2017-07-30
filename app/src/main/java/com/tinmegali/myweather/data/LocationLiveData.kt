@@ -32,7 +32,7 @@ class LocationLiveData
 
     @SuppressLint("MissingPermission")
     fun getLocation() {
-        info("getLocation")
+        info("locationLiveDa")
         locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null )
     }
 

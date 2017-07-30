@@ -32,15 +32,14 @@ class MainRepository
         prefsDAO.saveWeatherMain( weatherMain )
     }
 
-    fun getWeatherMainFromPrefs() : WeatherMain? {
+    fun getWeatherMainFromPrefs(): LiveData<WeatherMain> {
         info("getWeatherMainFromPrefs")
-        if ( prefsDAO.haveWeather() )
-            return prefsDAO.getWeatherMain()
-        else return null
+        return prefsDAO.getWeatherMain()
+
     }
 
-    fun getLocation() : LocationLiveData {
-        info("getLocation")
+    fun locationLiveDa() : LocationLiveData {
+        info("locationLiveDa")
         return location
     }
 
