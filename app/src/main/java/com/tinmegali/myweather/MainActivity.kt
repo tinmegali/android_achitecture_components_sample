@@ -1,16 +1,15 @@
 package com.tinmegali.myweather
 
-import android.arch.lifecycle.LifecycleActivity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import android.Manifest
+import android.arch.lifecycle.*
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.tinmegali.myweather.models.WeatherMain
-import com.tinmegali.myweather.repository.MainRepository
-import com.tinmegali.myweather.web.OpenWeatherService
 import dagger.android.AndroidInjection
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,9 +21,7 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     var viewModel: MainViewModel? = null
-
-    @Inject lateinit var weatherService: OpenWeatherService
-    @Inject lateinit var mainRepository: MainRepository
+    private val weather: MutableLiveData<WeatherMain> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         info("onCreate")
@@ -34,15 +31,17 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        isLoading(false)
+        uiNoData()
+
         initModel()
-        containerWeather.visibility = View.GONE
 
         btnGetCity.setOnClickListener {
             info("get city: ${editCity.text}")
             doAsync {
-                if ( editCity.text != null ) {
+                if ( !editCity.text.toString().isEmpty() ) {
                     uiThread { isLoading(true) }
-                    getWeather(editCity.text.toString())
+                    getWeatherByCity(editCity.text.toString())
                 } else {
                     uiThread {
                         toast("Please, write a city.")
@@ -51,11 +50,64 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
             }
         }
 
+        btnGetLocation.setOnClickListener {
+            info("get location")
+            if ( checkLocationPermissions() ) {
+                isLoading(true)
+                getWeatherByLocation()
+            }
+        }
+
     }
 
-    private fun getWeather(city: String) {
-        info("getWeather: $city")
-        viewModel!!.getWeatherByCity(this, city )
+    private fun initModel() {
+        isLoading(true)
+        // Get ViewModel
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+                .get(MainViewModel::class.java)
+
+        if (viewModel != null) {
+
+            doAsync {
+                // observe weather
+                viewModel!!.getWeather().observe(
+                        this@MainActivity,
+                        Observer {
+                            r ->
+                            info("Weather received on MainActivity:\n $r")
+                            if (!r!!.hasError()) {
+                                // Doesn't have any errors
+                                info("weather: ${r.data}")
+                                if (r.data != null)
+                                    uiThread { setUI(r.data) }
+                            } else {
+                                // error
+                                error("error: ${r.error}")
+                                uiThread { isLoading(false) }
+                                if (r.error!!.statusCode != 0) {
+                                    if (r.error!!.message != null)
+                                        toast(r.error.message!!)
+                                    else
+                                        toast("An error occurred")
+                                }
+                            }
+                        }
+                )
+            }
+        }
+
+        // get cached model
+        viewModel!!.getWeatherCached()
+    }
+
+    private fun getWeatherByLocation() {
+        info("updateWeatherByLocation")
+        viewModel!!.weatherByLocation()
+    }
+
+    private fun getWeatherByCity(city: String) {
+        info("getWeatherByCity: $city")
+        viewModel!!.weatherByCityName(city)
     }
 
     private fun isLoading( isLoading: Boolean ) {
@@ -68,6 +120,7 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
     private fun setUI( data: WeatherMain ) {
         info("setUI")
         isLoading(false)
+        uiData()
         containerWeather.visibility = View.VISIBLE
         txtCity.text = data.name
         txtMain.text = data.main
@@ -77,37 +130,45 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
         Glide.with(this).load(data.iconUrl()).into(imgIcon)
     }
 
-    private fun initModel() {
-        isLoading(true)
-        // Get ViewModel
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(MainViewModel::class.java)
-        if (viewModel != null) {
+    fun uiNoData() {
+        info("uiNoData")
+        containerWeather.visibility = View.GONE
+        txtNoWeather.visibility = View.VISIBLE
+    }
 
-            // start to observe weather
-            viewModel!!.cityWeather.observe(
-                    this,
-                    Observer {
-                        r ->
-                        info("Weather received on k_main Activity:\n $r")
-                        if (!r!!.hasError()) {
-                            // Doesn't have any errors
-                            info("weather: ${r.data}")
-                            if ( r.data != null) setUI(r.data)
-                        } else {
-                            // error
-                            error("error: ${r.error}")
-                            isLoading(false)
-                            if ( r.error!!.message != null )
-                                Toast.makeText(this,r.error.message, Toast.LENGTH_SHORT).show()
-                            else
-                                Toast.makeText(this, "An error occurred", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-            )
+    fun uiData() {
+        info("uiData")
+        containerWeather.visibility = View.VISIBLE
+        txtNoWeather.visibility = View.GONE
+    }
+
+    val permissionReq = 987
+    fun checkLocationPermissions(): Boolean {
+        info("checkLocationPermissions")
+        val permission1 =
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)
+        val permission2 =
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+        if ( permission1 == PackageManager.PERMISSION_GRANTED &&
+                permission2 == PackageManager.PERMISSION_GRANTED ) {
+            info("checkLocationPermissions: permission granted.")
+            return true
+        } else {
+            info("checkLocationPermissions: permission denied.")
+            ActivityCompat.requestPermissions(
+                    this, arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION),permissionReq)
+            return false
         }
+    }
 
-        // get cached model
-        viewModel!!.getWeatherCached()
+    override fun onRequestPermissionsResult(
+            requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when( requestCode ) {
+            permissionReq -> { getWeatherByLocation() }
+        }
     }
 }

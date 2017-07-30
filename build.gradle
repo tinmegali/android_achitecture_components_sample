@@ -29,6 +29,7 @@ task clean(type: Delete) {
 }
 
 ext {
+    anko = "0.10.1"
     arch = "1.0.0-alpha5"
     dagger2 = "2.11-rc2"
     gson = "2.8.0"

@@ -22,9 +22,9 @@ data class Sys(
 
         @SerializedName("sunrise")
         @Expose
-        var sunrise: Int? = null,
+        var sunrise: Double? = null,
 
         @SerializedName("sunset")
         @Expose
-        var sunset: Int? = null
+        var sunset: Double? = null
 )

@@ -2,6 +2,7 @@ package com.tinmegali.myweather.dagger
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tinmegali.myweather.data.LocationLiveData
 import com.tinmegali.myweather.data.PrefsDAO
 import com.tinmegali.myweather.repository.MainRepository
 import com.tinmegali.myweather.web.OpenWeatherService
@@ -29,13 +30,22 @@ class DataModule( val context: Context ) {
 
     @Provides
     @Singleton
+    fun providesLocationData(
+    ) : LocationLiveData {
+        return LocationLiveData( context )
+    }
+
+    @Provides
+    @Singleton
     fun providesMainRepository(
             openWeatherService: OpenWeatherService,
-            prefsDAO: PrefsDAO
+            prefsDAO: PrefsDAO,
+            locationLiveData: LocationLiveData
     ) : MainRepository {
         return MainRepository(
                 openWeatherService,
-                prefsDAO
+                prefsDAO,
+                locationLiveData
         )
     }
 

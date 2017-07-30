@@ -11,7 +11,19 @@ interface OpenWeatherApi {
 
     // Get Today's Weather by City
     @GET("weather")
-    fun cityWeather(@Query("q") city: String, @Query("APPID") appId: String, @Query("units") unit: String )
+    fun cityWeather(
+            @Query("APPID") appId: String,
+            @Query("q") city: String,
+            @Query("units") unit: String )
             : Call<WeatherResponse>
+
+    // Get Today's Weather by Location
+    @GET("weather")
+    fun cityWeatherByLocation(
+            @Query("APPID") appId: String,
+            @Query("lat") lat: String,
+            @Query("lon") lon: String,
+            @Query("units") unit: String ) : Call<WeatherResponse>
+
 
 }

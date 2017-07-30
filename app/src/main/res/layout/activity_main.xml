@@ -8,6 +8,16 @@
     android:layout_margin="16dp"
     >
 
+    <TextView
+        android:id="@+id/txtNoWeather"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please, type a city or get the weather of the current location"
+        android:textSize="16dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
+
 
     <EditText
         android:id="@+id/editCity"
@@ -32,12 +42,23 @@
 
         />
 
+    <Button
+        android:id="@+id/btnGetLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Weather by Location"
+        android:layout_below="@+id/btnGetCity"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+
+        />
+
     <RelativeLayout
         android:id="@+id/containerWeather"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        android:layout_below="@+id/btnGetCity"
+        android:layout_below="@+id/btnGetLocation"
         >
         <!-- City Name-->
         <TextView

@@ -1,5 +1,6 @@
 package com.tinmegali.myweather.web
 
+import android.location.Location
 import com.tinmegali.myweather.data.PrefsDAO
 import com.tinmegali.myweather.models.Response
 import com.tinmegali.myweather.models.WeatherResponse
@@ -20,16 +21,37 @@ class OpenWeatherService
 
     // Get Weather by City name
     fun getWeatherByCity(city: String): Response<WeatherResponse> {
-        info("getWeatherByCity: $city")
+        info("updateWeatherByCity: $city")
 
-        val call = api.cityWeather( city, openWeatherId, prefsDAO.getUnits() )
+        val call = api.cityWeather( openWeatherId, city, prefsDAO.getUnits() )
         val response = call.execute()
 
         if (response.isSuccessful) {
-            info("getWeatherByCity: success:\n${response.body()}")
+            info("updateWeatherByCity: success:\n${response.body()}")
             return Response( data = response.body() )
         } else {
-            info("getWeatherByCity: error:\n${response.errorBody()}")
+            info("updateWeatherByCity: error:\n${response.errorBody()}")
+            return Response( error = errorUtils.convertErrorBody(response.errorBody()!!))
+        }
+    }
+
+    // get Weather by Location
+    fun getWeatherByLocation( location: Location ) : Response<WeatherResponse> {
+        info("updateWeatherByLocation")
+
+        val call = api.cityWeatherByLocation(
+                openWeatherId,
+                location.latitude.toString(),
+                location.longitude.toString(),
+                prefsDAO.getUnits()
+        )
+        val response = call.execute()
+
+        if ( response.isSuccessful ) {
+            info("updateWeatherByLocation: success:\n${response.body()}")
+            return Response( data = response.body() )
+        } else {
+            info("updateWeatherByLocation: error:\n${response.errorBody()}")
             return Response( error = errorUtils.convertErrorBody(response.errorBody()!!))
         }
     }

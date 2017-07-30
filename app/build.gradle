@@ -39,7 +39,7 @@ dependencies {
     compile 'com.google.code.gson:gson:' + rootProject.gson
 
     // Anko
-    compile 'org.jetbrains.anko:anko:0.10.1'
+    compile 'org.jetbrains.anko:anko:' + rootProject.anko
 
     // Architecture Components
     compile "android.arch.lifecycle:runtime:" + rootProject.arch

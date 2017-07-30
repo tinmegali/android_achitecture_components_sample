@@ -1,6 +1,9 @@
 package com.tinmegali.myweather.repository
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.location.Location
+import com.tinmegali.myweather.data.LocationLiveData
 import com.tinmegali.myweather.data.PrefsDAO
 import com.tinmegali.myweather.models.Response
 import com.tinmegali.myweather.models.WeatherMain
@@ -13,18 +16,15 @@ class MainRepository
     @Inject
     constructor(
             private val openWeatherService: OpenWeatherService,
-            private val prefsDAO: PrefsDAO
+            private val prefsDAO: PrefsDAO,
+            private val location: LocationLiveData
     ) : AnkoLogger
 {
 
-    fun getWeatherByCity( city: String ) : MutableLiveData<Response<WeatherResponse>>
+    fun getWeatherByCity( city: String ) : Response<WeatherResponse>
     {
-        info("getWeatherByCity: $city")
-        val result: MutableLiveData<Response<WeatherResponse>> = MutableLiveData()
-        val r = openWeatherService.getWeatherByCity(city)
-        result.postValue(r)
-
-        return result
+        info("updateWeatherByCity: $city")
+        return openWeatherService.getWeatherByCity(city)
     }
 
     fun saveWeatherMainOnPrefs( weatherMain: WeatherMain ) {
@@ -37,6 +37,22 @@ class MainRepository
         if ( prefsDAO.haveWeather() )
             return prefsDAO.getWeatherMain()
         else return null
+    }
+
+    fun getLocation() : LocationLiveData {
+        info("getLocation")
+        return location
+    }
+
+    fun refreshLocation() {
+        info("refreshLocation")
+        location.refreshLocation()
+    }
+
+    fun getWeatherByLocation( location: Location ) : Response<WeatherResponse>
+    {
+        info("updateWeatherByLocation: \n$location")
+        return openWeatherService.getWeatherByLocation( location )
     }
 
 }
