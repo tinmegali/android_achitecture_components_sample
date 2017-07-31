@@ -10,18 +10,6 @@ import java.lang.reflect.Type
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
 
-/**
- * com.tinmegali.myweather.web | MyWeatherApp
- * __________________________________
- * Created by tinmegali
- * 30/07/17
-
- * @see [tinmegali.com](http://www.tinmegali.com)
-
- * @see [github](http://github.com/tinmegali)
- * ___________________________________
- */
-
 class LiveDataCallAdapterFactory : CallAdapter.Factory() {
 
     override fun get(returnType: Type, annotations: Array<Annotation>, retrofit: Retrofit): CallAdapter<Any, Any>? {

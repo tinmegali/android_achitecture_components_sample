@@ -57,7 +57,6 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
     }
 
     private fun initModel() {
-        isLoading(true)
         // Get ViewModel
         viewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(MainViewModel::class.java)
@@ -94,15 +93,18 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
 
     private fun getWeatherByLocation() {
         info("updateWeatherByLocation")
+        isLoading(true)
         viewModel!!.weatherByLocation()
     }
 
     private fun getWeatherByCity(city: String) {
         info("getWeatherByCity: $city")
+        isLoading(true)
         viewModel!!.weatherByCityName(city)
     }
 
     private fun isLoading( isLoading: Boolean ) {
+        info("isLoading: $isLoading")
         if ( isLoading )
             progressBar.visibility = View.VISIBLE
         else

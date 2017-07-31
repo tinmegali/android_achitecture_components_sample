@@ -20,10 +20,6 @@ class LocationLiveData
     private val locationManager: LocationManager =
             context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-    override fun onActive() {
-        info("onActive")
-    }
-
     @SuppressLint("MissingPermission")
     override fun onInactive() {
         info("onInactive")
@@ -31,14 +27,9 @@ class LocationLiveData
     }
 
     @SuppressLint("MissingPermission")
-    fun getLocation() {
-        info("locationLiveDa")
-        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null )
-    }
-
     fun refreshLocation() {
         info("refreshLocation")
-        getLocation()
+        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null )
     }
 
     override fun onLocationChanged(p0: Location?) {

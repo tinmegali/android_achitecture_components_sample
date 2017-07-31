@@ -11,15 +11,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-/**
- * com.tinmegali.myweather.data | MyWeatherApp
- * __________________________________
- * Created by tinmegali
- * 27/07/17
- * @see <a href="http://www.tinmegali.com">tinmegali.com</a>
- * @see <a href="http://github.com/tinmegali">github</a>
- * ___________________________________
- */
 class PrefsDAO
     @Inject
     constructor(

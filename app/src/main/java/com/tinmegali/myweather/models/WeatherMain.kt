@@ -16,10 +16,10 @@ data class WeatherMain(
                     dt = weatherResponse.dt!!,
                     name = weatherResponse.name,
                     tempMin = weatherResponse.main!!.tempMin,
-                    tempMax = weatherResponse.main!!!!.tempMax,
-                    main = weatherResponse.weather!![0].getMain()!!,
-                    description = weatherResponse.weather!![0].getDescription()!!,
-                    icon = weatherResponse.weather!![0].getIcon()!!
+                    tempMax = weatherResponse.main!!.tempMax,
+                    main = weatherResponse.weather!![0].main,
+                    description = weatherResponse.weather!![0].description,
+                    icon = weatherResponse.weather!![0].icon
             )
         }
     }

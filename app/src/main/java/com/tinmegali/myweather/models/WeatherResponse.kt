@@ -68,9 +68,9 @@ data class WeatherResponse(
         str.append("coord:[${coord!!.lat},${coord!!.lon}]\n")
         str.append("weather:\n")
         for ( w in weather!! ) {
-            str.append("id:${w.getId()}\n")
-            str.append("--description: ${w.getDescription()}\n")
-            str.append("--main: ${w.getMain()}\n")
+            str.append("id:${w.id}\n")
+            str.append("--description: ${w.description}\n")
+            str.append("--main: ${w.main}\n")
         }
         return str.toString()
     }

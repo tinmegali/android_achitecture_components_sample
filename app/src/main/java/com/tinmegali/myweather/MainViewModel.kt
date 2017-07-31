@@ -88,6 +88,16 @@ constructor(
 
     }
 
+    private fun updateWeather(w: WeatherResponse){
+        info("updateWeather")
+        // getting weather from today
+        val weatherMain = WeatherMain.factory(w)
+        // save on shared preferences
+        repository.saveWeatherMainOnPrefs(weatherMain)
+        // update weather value
+        weather.postValue(ApiResponse(data = weatherMain))
+    }
+
     override fun onCleared() {
         info("onCleared")
         super.onCleared()
@@ -107,16 +117,6 @@ constructor(
     private fun updateCityName(city: String) {
         info("updateCityName: $city")
         cityName.postValue(city)
-    }
-
-    private fun updateWeather(w: WeatherResponse){
-        info("updateWeather")
-        // getting weather from today
-        val weatherMain = WeatherMain.factory(w)
-        // save on shared preferences
-        repository.saveWeatherMainOnPrefs(weatherMain)
-        // update weather value
-        weather.postValue(ApiResponse(data = weatherMain))
     }
 
     // changes the value of weatherResponse
