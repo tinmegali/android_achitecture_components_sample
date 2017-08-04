@@ -20,10 +20,10 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     var viewModel: MainViewModel? = null
-    private val weather: MutableLiveData<WeatherMain> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         info("onCreate")
+
         // Dagger
         AndroidInjection.inject(this)
 
@@ -41,9 +41,8 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
                 isLoading(true)
                 getWeatherByCity(editCity.text.toString())
             } else {
-                toast("Please, write a city.")
+                toast("Please, write down a city.")
             }
-
         }
 
         btnGetLocation.setOnClickListener {
@@ -68,21 +67,23 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
                     this@MainActivity,
                     Observer {
                         r ->
-                        info("Weather received on MainActivity:\n $r")
-                        if (!r!!.hasError()) {
-                            // Doesn't have any errors
-                            info("weather: ${r.data}")
-                            if (r.data != null)
-                                setUI(r.data)
-                        } else {
-                            // error
-                            error("error: ${r.error}")
-                            isLoading(false)
-                            if (r.error!!.statusCode != 0) {
-                                if (r.error!!.message != null)
-                                    toast(r.error.message!!)
-                                else
-                                    toast("An error occurred")
+                        if ( r != null ) {
+                            info("Weather received on MainActivity:\n $r")
+                            if (!r.hasError()) {
+                                // Doesn't have any errors
+                                info("weather: ${r.data}")
+                                if (r.data != null)
+                                    setUI(r.data)
+                            } else {
+                                // error
+                                error("error: ${r.error}")
+                                isLoading(false)
+                                if (r.error!!.statusCode != 0) {
+                                    if (r.error!!.message != null)
+                                        toast(r.error.message!!)
+                                    else
+                                        toast("An error occurred")
+                                }
                             }
                         }
                     }

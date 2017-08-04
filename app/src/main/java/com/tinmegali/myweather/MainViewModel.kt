@@ -28,8 +28,6 @@ constructor(
     // Weather by cache
     private var weatherByCache: LiveData<WeatherMain> = MutableLiveData()
 
-    // Can hold two variable with different logic,
-    // weatherByCityName and weatherByLocation.
     private var weatherByLocationResponse:
             LiveData<ApiResponse<WeatherResponse>> = Transformations.switchMap(
             location,
