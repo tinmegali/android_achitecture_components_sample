@@ -1,14 +1,36 @@
 package com.tinmegali.myweather.models
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
+
+@Entity( tableName = "weather" )
 data class WeatherMain(
-        val dt: Long?,
-        val name: String?,
-        val tempMin: Double?,
-        val tempMax: Double?,
-        val main: String?,
-        val description: String?,
-        val icon: String?
+
+        @ColumnInfo( name = "date" )
+        var dt: Long?,
+
+        @ColumnInfo( name = "city" )
+        var name: String?,
+
+        @ColumnInfo(name = "temp_min" )
+        var tempMin: Double?,
+
+        @ColumnInfo(name = "temp_max" )
+        var tempMax: Double?,
+
+        @ColumnInfo( name = "main" )
+        var main: String?,
+
+        @ColumnInfo( name = "description" )
+        var description: String?,
+
+        @ColumnInfo( name = "icon" )
+        var icon: String?
 ) {
+    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0
 
     companion object {
         fun factory( weatherResponse: WeatherResponse ) : WeatherMain {
@@ -27,5 +49,4 @@ data class WeatherMain(
     fun iconUrl() : String {
         return "http://openweathermap.org/img/w/$icon.png"
     }
-
 }

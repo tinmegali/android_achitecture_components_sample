@@ -1,8 +1,11 @@
 package com.tinmegali.myweather.dagger
 
+import android.arch.persistence.room.Room
 import android.content.Context
 import com.tinmegali.myweather.R
+import com.tinmegali.myweather.data.Database
 import com.tinmegali.myweather.data.PrefsDAO
+import com.tinmegali.myweather.data.WeatherDAO
 import com.tinmegali.myweather.web.ErrorUtils
 import com.tinmegali.myweather.web.LiveDataCallAdapterFactory
 import com.tinmegali.myweather.web.OpenWeatherApi

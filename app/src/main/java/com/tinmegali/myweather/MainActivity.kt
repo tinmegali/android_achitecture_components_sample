@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.tinmegali.myweather.models.WeatherMain
 import dagger.android.AndroidInjection
@@ -79,13 +80,20 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
                                 error("error: ${r.error}")
                                 isLoading(false)
                                 if (r.error!!.statusCode != 0) {
-                                    if (r.error!!.message != null)
                                         toast(r.error.message!!)
-                                    else
-                                        toast("An error occurred")
                                 }
                             }
                         }
+                    }
+            )
+            viewModel!!.getErrors().observe(
+                    this@MainActivity,
+                    Observer {
+                        errorMsg ->
+                        // stop pre loader
+                        isLoading(false)
+                        if (errorMsg != null)
+                            showWarning(errorMsg)
                     }
             )
 
@@ -165,5 +173,9 @@ class MainActivity : LifecycleActivity(), AnkoLogger {
         when( requestCode ) {
             permissionReq -> { getWeatherByLocation() }
         }
+    }
+
+    fun showWarning(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT ).show()
     }
 }
